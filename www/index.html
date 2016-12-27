@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/ioscarf.css" />
+    <title>ioScarf</title>
+</head>
+
+<body>
+    <div class="app">
+        <div id="deviceready">
+            <div class="event listening">
+              Loading
+            </div>
+            <div class="event received" id="app_root">
+                <div id='walkthroughPage' class='appPage activePage'>
+                  <div class='separator separator10'></div>
+                  <div id='wtPages' class='carousel'>
+                    <div class='pageIndicatorContainer'>
+                      <div class='pageIndicator'></div>
+                        <div class='pageIndicator'></div>
+                          <div class='pageIndicator'></div>
+                            <div class='pageIndicator'></div>
+                    </div>
+                    <ul class='pane-container'>
+                      <li class='pane'>
+                        <div class='vertical-center'>1</div>
+                      </li>
+                      <li class='pane'>
+                        <div class='vertical-center'>2</div>
+                      </li>
+                      <li class='pane'>
+                        <div class='vertical-center'>3</div>
+                      </li>
+                          <li class='pane'>
+                        <div class='vertical-center'>4</div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class='separator separator2'></div>
+                  <div class='wtText'>
+                    Hey dear user. Welcome to your scarf's application. Swipe here to learn about what you can do with it.
+                  </div>
+                  <div class='separator separator2'></div>
+                  <div class='wtSkip button' id='leaveWt'>
+                  I Got it!
+                  </div>
+                </div>
+                <div id='notificationsPage' class='appPage'>
+                  <div class="navHeader">
+                      <div class='navHeaderContainer'>
+                          <div class='backButton'>
+                            BACK
+                          </div>
+                          <div class='navTitle'>
+                            Your Notifications
+                          </div>
+                          <div class='rightAction' id='configButton'>
+                            CFG
+                          </div>
+                      </div>
+                  </div>
+                  <div id="notificationsBody">
+                    <div class="notifEmptyState" id="notifEmptyState">
+                      Oops, nothing to show here sorry :/
+                    </div>
+                    <div class="notificationsList" id="notificationsList">
+                    </div>
+
+                  </div>
+                  <div class='floatingButton' id='newNotifButton'>
+                    +
+                  </div>
+                </div>
+                <div id='configurationPage' class='appPage'>
+                  <div class="navHeader">
+                      <div class='navHeaderContainer'>
+                          <div class='backButton'>
+                            BACK
+                          </div>
+                          <div class='navTitle'>
+                            Configuration
+                          </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/hammer.min.js"></script>
+    <script type="text/javascript" src="js/hm_propag.js"></script>
+    <script type="text/javascript" src="js/pouchdb-6.1.0.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/ioscarf.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</body>
+
+</html>
