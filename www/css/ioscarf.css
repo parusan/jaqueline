@@ -70,6 +70,7 @@
 .appPage {
   position: absolute;
   width: 100%;
+  overflow: hidden;
   height: 100vh;
   opacity: 0;
   z-index: 0;
@@ -129,30 +130,38 @@
   display: block;
   height: 60%;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .carousel {
   width: 100%;
-  overflow: hidden;
 }
 
 .pageIndicator {
   display: block;
-  height: 10px;
-  width: 10px;
-  background: transparent;
-  border: 2px solid #FFF;
+  height: 8px;
+  width: 8px;
+  background: #333;
+  border: 2px solid #333;
   float:left;
   z-index: 2;
   margin: 5px;
+  border-radius: 50%;
+  transform: scale(0.4);
+  transition: all .3s cubic-bezier(.71,1.87,.66,.67);
+}
+
+.pageIndicator.active {
+  border: 2px solid #FFF;
+  transform: scale(1);
 }
 
 .pageIndicatorContainer {
   position: absolute;
   bottom: 10px;
-  left: calc(50% - 20px);
-  width: 80px;
+  left: calc(50% - 44px);
+  width: 88px;
+  z-index: 2;
 }
 
 .pageIndicatorContainer:after {
@@ -242,7 +251,7 @@
   font-family: 'Raleway', sans-serif;
 }
 
-.button:hover, .button:active, .button:focus {
+.button:hover, .button:active {
   color: #FFF;
   background: #402B30;
 }
@@ -302,7 +311,7 @@ height: 100%;
   border-radius: 4px;
 }
 
-.backButton:hover, .backButton:focus, .backButton:active  {
+.backButton:hover, .backButton:active  {
   color: #FFF;
   background: #402B30;
 }
@@ -321,7 +330,7 @@ height: 100%;
   border-radius: 4px;
 }
 
-.rightAction:hover, .rightAction:focus, .rightAction:active  {
+.rightAction:hover, .rightAction:active  {
   color: #FFF;
   background: #402B30;
 }
@@ -345,7 +354,7 @@ height: 100%;
   background: linear-gradient(to left, #FFF , #FAFAFA);
   overflow-y: scroll; /* has to be scroll, not auto */
   -webkit-overflow-scrolling: touch;
-  padding: 60px 10px 10px;
+  padding: 90px 10px 10px;
   box-sizing: border-box;
 }
 
@@ -374,7 +383,7 @@ height: 100%;
   transition : all 0.3s ease-out;
 }
 
-.floatingButton:hover,.floatingButton:active,.floatingButton:focus {
+.floatingButton:hover,.floatingButton:active {
   background: #FFF;
   color: #402B30;
   box-shadow: 0 0 10px 0px #888;
@@ -402,35 +411,157 @@ height: 100%;
 .notif {
   width: 100%;
   box-sizing: border-box;
-  padding: 20px;
   border-radius: 4px;
   box-shadow: 0 0 15px 1px #CCC;
   margin-bottom: 15px;
   transition: all ease-out 0.3s;
+  position: relative;
+  opacity: 0;
+  transform: translateZ(20px);
+  }
 
+  .activePage .notif {
+    animation: floatInNotif 0.3s forwards ease-out 1s;
+  }
+  .activePage .notif:nth-of-type(1) {animation-delay: 0.3s}
+  .activePage .notif:nth-of-type(2) {animation-delay: 0.4s}
+  .activePage .notif:nth-of-type(3) {animation-delay: 0.5s}
+  .activePage .notif:nth-of-type(4) {animation-delay: 0.6s}
+  .activePage .notif:nth-of-type(5) {animation-delay: 0.7s}
+  .activePage .notif:nth-of-type(6) {animation-delay: 0.8s}
+
+@keyframes floatInNotif {
+0% {
+  transform: translateY(20px);
+  opacity: 0;
+}
+100% {
+  transform: translateZ(0);
+  opacity: 1;
+}
+}
+
+.notif:after {
+  clear: both;
+  content: ' ';
+  display: block;
 }
 
 .notif .notif_id{
   float: right;
-  color: #888;
+      color: #AAA;
+      font-size: 8px;
 }
 
-.notif .notif_type{
+.notif div.phoneCall{
   display: block;
+  width: 30px;
+  float: left;
+  min-height: 40px;
+}
+
+.notif div.phoneCall:before{
+  font-family: 'icons';
+  font-size: 16px;
+  content: '\E830';
+  color: #F0544F;
+  padding: 14px 14px;
+  display: block;
+}
+
+.notif .notifInfos {
+  float: left;
+  padding: 10px;
+  width: calc(100% - 110px);
+}
+
+.notif_contacts:after {
+  display: block;
+  content: ' ';
+  clear: both;
+}
+
+.notif_contacts {
+margin-bottom: 10px;
+}
+
+.avatar {
+  float: left;
+  position: relative;
+  width: 30px;
+  height: 40px;
+  display: block;
+  opacity: 0;
+}
+
+.activePage .avatar {
+  animation: goAvatar 0.6s forwards cubic-bezier(.33,.92,.43,.92) 0.6s;
+}
+
+.activePage .notif_contacts .avatar:nth-of-type(1) {animation-delay: 0.2s;}
+.activePage .notif_contacts .avatar:nth-of-type(2) {animation-delay: 0.3s;}
+.activePage .notif_contacts .avatar:nth-of-type(3) {animation-delay: 0.4s;}
+.activePage .notif_contacts .avatar:nth-of-type(4) {animation-delay: 0.5s;}
+
+@keyframes goAvatar {
+  0% {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+ .avatar img {
   width: 40px;
   height: 40px;
-  background: #F0544F;
-  margin: 10px;
-  border-radius: 4px;
+  border-radius: 20px;
+  border: 2px solid #FFF;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.notif .notif_type:before{
+.introNotifInfos {
+  color: #6C464E;
+  text-transform: none;
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.introNotifInfos span.phoneCall:before{
+  content: '  Call';
+  font-weight: 700;
+  color: #F0544F;
+  font-family: 'Slabo27px';
+  font-size: 18px;
+}
+
+.notifActions {
+  float: right;
+  padding: 10px;
+}
+
+.notifActions .notifButton.deleteButton {
+  display: block;
+  width: 30px;
+  height: 30px;
+  background:#FFF;
+}
+
+.notifActions .notifButton.deleteButton:before {
+  display: block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  content: '\E811';
+  color: #F0544F;
   font-family: 'icons';
   font-size: 20px;
-  content: '\E830';
-  color: #FFF;
-  padding: 10px;
-  display: block;
 }
 
 .notif.full {
@@ -441,6 +572,7 @@ height: 100%;
  width: 100%;
  z-index: 12;
  background: #F3F3F2;
+  animation: floatInNotif 0.3s forwards ease-out;
 }
 
 .notif .additionalActions {
@@ -448,5 +580,7 @@ height: 100%;
 }
 
 .notif.full .additionalActions {
+  float:right;
+  padding: 10px;
   display: block;
 }

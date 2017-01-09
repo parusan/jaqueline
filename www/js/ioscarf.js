@@ -151,17 +151,22 @@ function storeNotif() {
   if (!err) {
     console.log('Notification configuration stored')
     var myNotif = "<div class='notif' id='Notif_"+notif._id+"'> \
-      <div class='notif_id'>"+notif._id+"</div> \
-      <div class='notif_type'></div> \
-      <div class='notif_contacts'>"+notif.contacts+"</div> \
-      <div class='notif_description'>"+notif.description+"</div> \
-      <div class='notifButton button deleteButton' id='"+notif._id+"'>DEL</div> \
+          <div class='"+ notif.type + "'></div> \
+          <div class='notifInfos'> \
+            <div class='introNotifInfos'>On <span class='"+ notif.type + "'></span> from </div> \
+            <div class='notif_contacts'>"+notif.contacts+"</div> \
+            <div class='notif_description'>"+notif.description+"</div> \
+            <div class='notif_id'>"+notif._id+"</div> \
+          </div> \
+          <div class='notifActions'> \
+            <div class='notifButton deleteButton' id='"+notif._id+"'></div> \
+          </div> \
       <div class='additionalActions'> \
         <div class='notifButton button closeButton'>Close</div> \
       </div> \
     </div>"
 
-    addNotifToList (myNotif, notif._id);
+    addNotifToList (myNotif, notif._id, notif.contacts);
   }
   else {
     console.log('oops' + err)
@@ -170,9 +175,26 @@ function storeNotif() {
 });
 }
 
-function addNotifToList (html, id) {
+function addNotifToList (html, id, contactsArray) {
   var $object = $(html).appendTo($('#notificationsList'));
   console.log($object);
+
+  var nbContacts= contactsArray.length;
+  console.log('Found ' + nbContacts + ' contacts for notification' + id);
+
+  /* Let's build a mock if there is nothing */
+  if (nbContacts == 0) {
+    nbContacts = Math.floor(Math.random()*7) + 1 ;
+    console.log(nbContacts);
+    for (i=0; i<nbContacts; i++) {
+      var url = getRandomFace();
+      var avatar = "<div class='avatar'> \
+                      <img src='"+ url + "'>\
+                  </div>"
+      $object.find('.notif_contacts').append($(avatar));
+    }
+
+  }
 
   /* Here we assign the action to open full Page the notifications */
   //var notifObject = newNotif;
@@ -184,7 +206,7 @@ function addNotifToList (html, id) {
 
   /* Here we assign the actions to the buttons */
     var myId = id;
-    ht = propagating(new Hammer($object.children('.deleteButton').get(0)));
+    ht = propagating(new Hammer($object.children('.notifActions').children('.deleteButton').get(0)));
     ht.domEvents=true; // enable dom events
     ht.on('tap', function(ev) {
       showActions($object, myId);
@@ -204,16 +226,20 @@ function addNotifToList (html, id) {
 
 }
 
+
 function openFullPage(jqueryObject) {
-  var notificationCard = jqueryObject;
   trackNavigation('detailView');
+  var notificationCard = jqueryObject.detach();
   notificationCard.addClass('full');
+  $("#app_root").prepend(notificationCard);
+  $('notificationsPage').removeClass('activePage');
 }
 
 function closeFullPage(jqueryObject) {
-  var notificationCard = jqueryObject;
-  trackNavigation('notificationsPage');
+  var notificationCard = jqueryObject.detach();
   notificationCard.removeClass('full');
+  $("#notificationsList").prepend(notificationCard);
+  $('notificationsPage').addClass('activePage');
 }
 
 
@@ -245,17 +271,22 @@ function buildList() {
       var nbNotifs = dataSet.length;
       $.each (dataSet, function(i, v) {
         var notif = "<div class='notif' id='Notif_"+dataSet[i].doc._id+"'> \
-          <div class='notif_id'>"+dataSet[i].doc._id+"</div> \
-          <div class='notif_type'></div> \
-          <div class='notif_contacts'>"+dataSet[i].doc.contacts+"</div> \
-          <div class='notif_description'>"+dataSet[i].doc.description+"</div> \
-          <div class='notifButton button deleteButton' id='"+dataSet[i].doc._id+"'>DEL</div> \
+              <div class='"+ dataSet[i].doc.type + "'></div> \
+              <div class='notifInfos'> \
+                <div class='introNotifInfos'>On <span class='"+ dataSet[i].doc.type + "'></span> from </div> \
+                <div class='notif_contacts'>"+dataSet[i].doc.contacts+"</div> \
+                <div class='notif_description'>"+dataSet[i].doc.description+"</div> \
+                <div class='notif_id'>"+dataSet[i].doc._id+"</div> \
+              </div> \
+              <div class='notifActions'> \
+                <div class='notifButton deleteButton' id='"+dataSet[i].doc._id+"'></div> \
+              </div> \
           <div class='additionalActions'> \
             <div class='notifButton button closeButton'>Close</div> \
           </div> \
         </div>"
 
-        addNotifToList (notif, dataSet[i].doc._id);
+        addNotifToList (notif, dataSet[i].doc._id, dataSet[i].doc.contacts);
   });
 });
 }
@@ -303,6 +334,11 @@ function deleteNotif(notifObject, myId) {
   });
 }
 
+
+
+
+/* Introduction Carousel */
+
 function Carousel(selector) {
   var self = this;
   var transitionEnd = 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend';
@@ -335,6 +371,9 @@ function Carousel(selector) {
   self.showPane = function(index) {
     currentPane = Math.max(0, Math.min(index, paneCount - 1));
     setContainerOffsetX(-currentPane * paneWidth, true);
+    $('.pageIndicator').removeClass('active');
+    indexNth = index + 1;
+    $('.pageIndicator:nth-child('+ indexNth +')').addClass('active');
   }
 
   function setContainerOffsetX(offsetX, doTransition) {
@@ -417,3 +456,112 @@ function Carousel(selector) {
   }
   var hammer = new Hammer($carousel[0]).on('swipeleft swiperight panleft panright panend pancancel', handleHammer);
 }
+
+
+
+ function getRandomFace() {
+   var faces = [{
+  "first_name": "Pete",
+  "last_name": "Wrigley",
+  "image": "img/little-pete-wrigley.jpg",
+  "location": "Wellsville, NY"
+}, {
+  "first_name": "Aeon",
+  "last_name": "Flux",
+  "image": "img/aeon-flux.jpg",
+  "location": "Nation of Monica"
+}, {
+  "first_name": "Alan",
+  "last_name": "Frog",
+  "image": "img/alan-frog.jpg",
+  "location": "Santa Clara, CA"
+}, {
+  "first_name": "Amanda",
+  "last_name": "Bynes",
+  "image": "img/amanda-bynes.jpg",
+  "location": "Hollywood, CA"
+}, {
+  "first_name": "April",
+  "last_name": "O'Neil",
+  "image": "img/april-oneil.jpg",
+  "location": "Brooklyn, NY"
+}, {
+  "first_name": "Artie",
+  "last_name": "...the strongest man in the world",
+  "image": "img/artie-strongman.jpg",
+  "location": "Wellsville, NY"
+}, {
+  "first_name": "Baby",
+  "last_name": "Sinclair",
+  "image": "img/baby-sinclair.jpg",
+  "location": "Pangaea"
+}, {
+  "first_name": "Big Pete",
+  "last_name": "Wrigley",
+  "image": "img/big-pete-wrigley.jpg",
+  "location": "Wellsville, NY"
+}, {
+  "first_name": "Bobby",
+  "last_name": "Budnick",
+  "image": "img/bobby-budnick.jpg",
+  "location": "Camp Anawanna, VA"
+}, {
+  "first_name": "Bradley",
+  "last_name": "Taylor",
+  "image": "img/bradley-taylor.jpg",
+  "location": "Dude Ranch, AZ"
+}, {
+  "first_name": "Casey",
+  "last_name": "Jones",
+  "image": "img/casey-jones.jpg",
+  "location": "Brooklyn, NY"
+}, {
+  "first_name": "Charlene",
+  "last_name": "Sinclair",
+  "image": "img/charlene-sinclair.jpg",
+  "location": "Pangaea"
+}, {
+  "first_name": "Chris",
+  "last_name": "Chambers",
+  "image": "img/chris-chambers.jpg",
+  "location": "Castlerock, OR"
+}, {
+  "first_name": "Danny",
+  "last_name": "Lightfoot",
+  "image": "img/danny-lightfoot.jpg",
+  "location": "Dude Ranch, AZ"
+}, {
+  "first_name": "Danny",
+  "last_name": "Pennington",
+  "image": "img/danny-pennington.jpg",
+  "location": "Brooklyn, NY"
+}, {
+  "first_name": "Daria",
+  "last_name": "Morgendorffer",
+  "image": "img/daria-morgendorffer.jpg",
+  "location": "Lawndale, MTV"
+}, {
+  "first_name": "Dina",
+  "last_name": "Alexander",
+  "image": "img/dina-alexander.jpg",
+  "location": "Camp Anawanna, VA"
+}, {
+  "first_name": "Eddie",
+  "last_name": "Gelfen",
+  "image": "img/eddie-gelfen.jpg",
+  "location": "Camp Anawanna, VA"
+}, {
+  "first_name": "Ellen Josephine",
+  "last_name": "Hickle",
+  "image": "img/ellen-josephine-hickle.jpg",
+  "location": "Wellsville, NY"
+}, {
+  "first_name": "Ernest",
+  "last_name": "Worrell",
+  "image": "img/ernest-worrell.jpg",
+  "location": "Jail, Prison"
+}]
+var nbFaces = faces.length;
+var which = Math.floor(Math.random()*nbFaces);
+return faces[which].image;
+ }
