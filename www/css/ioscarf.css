@@ -188,28 +188,29 @@
   float: left;
   height: 100%;
   width: 100%;
+  box-sizing: border-box;
+  background: #FFF
 }
 
-.carousel li.pane:nth-child(1) {
-  background: #42d692;
+.carousel li.pane:nth-child(1) div {
+  color: #42d692;
 }
 
-.carousel li.pane:nth-child(2) {
-  background: #4986e7;
+.carousel li.pane:nth-child(2) div {
+  color: #4986e7;
 }
 
-.carousel li.pane:nth-child(3) {
-  background: #d06b64;
+.carousel li.pane:nth-child(3) div {
+  color: #d06b64;
 }
 
-.carousel li.pane:nth-child(4) {
-  background: #42d692;
+.carousel li.pane:nth-child(4) div {
+  color: #42d692;
 }
 
 .pane div {
   text-align: center;
-  font-size: 3em;
-  color: #fff;
+  font-size: 14px;
 }
 
 .wtText {
@@ -302,13 +303,23 @@ height: 100%;
   padding: 5px;
   width: 50px;
   height: 40px;
-  line-height: 30px;
+  line-height: 40px;
   text-align: center;
   float: left;
   cursor: pointer;
   box-sizing: border-box;
   transition: all ease-out 0.3s;
   border-radius: 4px;
+}
+.noButton {
+  margin: 20px 5px 5px;
+  padding: 5px;
+  width: 50px;
+  height: 40px;
+  line-height: 30px;
+  text-align: center;
+  float: left;
+  box-sizing: border-box;
 }
 
 .backButton:hover, .backButton:active  {
@@ -321,7 +332,7 @@ height: 100%;
   padding: 5px;
   width: 50px;
   height: 40px;
-  line-height: 30px;
+  line-height: 40px;
   text-align: center;
   float: left;
   cursor: pointer;
@@ -356,6 +367,36 @@ height: 100%;
   -webkit-overflow-scrolling: touch;
   padding: 90px 10px 10px;
   box-sizing: border-box;
+}
+
+#configBody {
+  height: 100%;
+  width: 100%;
+  display:block;
+  z-index: 0;
+  background: #FFF;
+  background: -webkit-linear-gradient(to left, #FFF , #FAFAFA);
+  background: linear-gradient(to left, #FFF , #FAFAFA);
+  overflow-y: scroll; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+  padding: 90px 10px 10px;
+  box-sizing: border-box;
+}
+
+#configBody h1{
+  color: #F0544F;
+font-family: 'Slabo27px';
+  text-transform: none;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+#configBody .noActiveDevice, #configBody .activeDevice {
+  font-weight: 700;
+font-size: 12px;
+transition: all 0.3s ease-out;
+font-family: 'Raleway', sans-serif;
+  color: #6C464E;
 }
 
 ::-webkit-scrollbar {

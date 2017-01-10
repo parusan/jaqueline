@@ -3,8 +3,12 @@
 var navigation = [];
 var ioScarfDb = new PouchDB('ioScarfDb');
 var environment = 'mobile';
+var bleState = false;
+var availableDevices = [];
 
-$( '#deviceready' ).ready(function() {
+/* Function called initially */
+
+function deviceReady () {
 
   /* Detect if browser */
   var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
@@ -20,7 +24,7 @@ $( '#deviceready' ).ready(function() {
   /* Notifications list */
   /* ******* */
     initiateDB();
-
+    setBle();
 
   /* Buttons actions binding goes here */
   var hammertime = new Hammer(document.getElementById('leaveWt'));
@@ -55,7 +59,21 @@ $( '#deviceready' ).ready(function() {
 
   });
 
-});
+}
+
+/* Function called when the application is back from background */
+
+function onResume() {
+  if (!bleState) {
+    bleState = testBle();
+    if (bleState) {
+      getDevices();
+    }
+    else {
+      alert('oops, ble is switched off. Please switch on to proceed.')
+    }
+  }
+}
 
 /* ********************* */
 /* NAVIGATION ACTIONS */
@@ -438,7 +456,6 @@ function Carousel(selector) {
           e.deltaX *= .2;
         }
         setContainerOffsetX(-currentPane * paneWidth + e.deltaX);
-        console.log(-currentPane * paneWidth + e.deltaX);
         break;
       case 'panend':
       case 'pancancel':
@@ -458,6 +475,102 @@ function Carousel(selector) {
 }
 
 
+/* ******** Bluetooth functions **** */
+/* ********************************* */
+
+function setBle() {
+  ble.isEnabled(
+    function() {
+        bleIsEnabled();
+    },
+    function() {
+        bleIsDisabled();
+    }
+);
+}
+
+function bleIsEnabled() {
+  getDevices();
+}
+
+function bleIsDisabled() {
+  alert('oops, ble is switched off. Please switch on to proceed.')
+}
+
+function getDevices() {
+
+  if (typeof ble !== 'undefined') {
+      // the variable is defined
+      console.log('Searching for devices');
+      if (ble) {
+        ble.scan([], 30, function(device) {
+          onDiscoverDevice(device);
+      }, onFailure());
+      // Retrieve list + add to List of deices
+      // TODO : make this asynchronuous + add a device or refresh list when additional devices found
+    }
+    else {
+      console.log('BLE variable null')
+    }
+  }
+  else {
+    console.log("BLE is not defined, couldn't initialize BLE");
+    alert("BLE is not defined, couldn't initialize BLE")
+  }
+
+}
+
+function onDiscoverDevice(device) {
+  var newDevice = {
+    '_id': device.id,
+    'deviceId': device.id,
+    'type': 'phoneCall',
+    'color': 'text',
+    'active': true
+  };
+  availableDevices.push('yo');
+  alert(device.id)
+  var deviceEntry = "<div class='device' id='Device"+device.id+"'>" +  JSON.stringify(device) + "</div>"
+  addDeviceToList(deviceEntry);
+}
+
+function onFailure() {
+}
+
+
+function addDeviceToList (html) {
+  var $object = $(html).appendTo($('#devicesList'));
+  console.log($object);
+
+  /* Here we assign the action to open full Page the notifications
+  //var notifObject = newNotif;
+  ht2 = propagating(new Hammer($object.get(0)));
+  ht2.on('tap', function(ev2) {
+      ev2.stopPropagation();
+    openFullPage($object);
+  });
+
+  /* Here we assign the actions to the buttons
+    var myId = id;
+    ht = propagating(new Hammer($object.children('.notifActions').children('.deleteButton').get(0)));
+    ht.domEvents=true; // enable dom events
+    ht.on('tap', function(ev) {
+      showActions($object, myId);
+      ev.stopPropagation();
+    });
+
+    /* Here we assign the actions to the close button
+      ht3 = propagating(new Hammer($object.children('.additionalActions').children('.closeButton').get(0)));
+      ht3.domEvents=true; // enable dom events
+      ht3.on('tap', function(ev3) {
+        closeFullPage($object);
+        ev3.stopPropagation();
+      });
+
+    setScene();
+    console.log('### Adding element Done ###');*/
+
+}
 
  function getRandomFace() {
    var faces = [{

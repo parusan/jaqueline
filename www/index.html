@@ -61,16 +61,29 @@
                     </div>
                     <ul class='pane-container'>
                       <li class='pane'>
-                        <div class='vertical-center'>1</div>
+                        <div class='vertical-center'>
+                          <p>Welcome to your ioScarf app</p>
+                          <p>This app will help you configure your scarf</p>
+                          <p>Swipe for more</p>
+                        </div>
                       </li>
                       <li class='pane'>
-                        <div class='vertical-center'>2</div>
+                        <div class='vertical-center'>
+                          <p>With ScarfApp, you can do this</p>
+                          <p>Swipe for more</p>
+                        </div>
                       </li>
                       <li class='pane'>
-                        <div class='vertical-center'>3</div>
+                        <div class='vertical-center'>
+                          <p>You can also do that</p>
+                          <p>Swipe for more</p>
+                        </div>
                       </li>
                           <li class='pane'>
-                        <div class='vertical-center'>4</div>
+                        <div class='vertical-center'>
+                          <p>ioScarf uses the bluetooth technology to connect to your Scarf</p>
+                          <p>It seems your bluetooth is not activated. Please activate your bluetooth to use the app.</p>
+                        </div>
                       </li>
                     </ul>
                   </div>
@@ -86,9 +99,8 @@
                 <div id='notificationsPage' class='appPage'>
                   <div class="navHeader">
                       <div class='navHeaderContainer'>
-                          <div class='backButton'>
-                            BACK
-                          </div>
+                        <div class='noButton'>
+                        </div>
                           <div class='navTitle'>
                             Your Notifications
                           </div>
@@ -120,17 +132,27 @@
                           </div>
                       </div>
                   </div>
+                  <div id="configBody">
+                    <h1>Active Device</h1>
+                    <div class="activeDevice" id="activeDevice">
+                      <div class='noActiveDevice'>No Active Device</div>
+                      <div class='activeDeviceDescription'>There should be a device here</div>
+                    </div>
+                    <h1>Available Devices</h1>
+                    <div class="devicesList" id="devicesList">
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="js/hammer.min.js"></script>
     <script type="text/javascript" src="js/hm_propag.js"></script>
     <script type="text/javascript" src="js/pouchdb-6.1.0.min.js"></script>
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript" src="js/ioscarf.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript">
         app.initialize();
     </script>
