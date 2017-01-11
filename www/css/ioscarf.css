@@ -648,29 +648,58 @@ margin-bottom: 10px;
  .device:nth-of-type(5) {animation-delay: 0.7s}
  .device:nth-of-type(6) {animation-delay: 0.8s}
 
-  .device .device_name {
-    font-weight: 700;
-    color: #333;
-    font-family: 'Slabo27px';
-    font-size: 14px;
-    width: 100%;
-  }
+.device .device_name {
+font-weight: 700;
+color: #333;
+font-family: 'Slabo27px';
+font-size: 14px;
+width: 100%;
+}
 
-  .device .actionBar {
-    width: 100%;
-  }
+.device .actionBar {
+width: 100%;
+}
 
-  .device .deviceButton {
-    float: left;
-  }
+.device .deviceButton {
+float: left;
+}
 
-  .pushButtonHexa {
-    margin: 10px;
-  }
+.pushButtonHexa {
+margin: 10px;
+}
 
-  .device_full, .device .device_id, .device .device_rssi {
-    color: #888;
-    font-size: 12px;
-    width: 100%;
-    word-break: break-all;
-  }
+.device_full, .device .device_id, .device .device_rssi {
+color: #888;
+font-size: 12px;
+width: 100%;
+word-break: break-all;
+}
+
+.devicesActionBar {
+height: 20px;
+width: 100%;
+display: block;
+margin-bottom: 10px;
+}
+
+.devicesActionBar:after {
+content: ' ';
+clear: both;
+display: block;
+}
+
+.devicesActionBar .toolBarButton{
+width: 20px;
+height: 20px;
+display: block;
+float: right;
+}
+
+.refreshButton.iconButton:before {
+  width: 20px;
+  line-height: 20px;
+  font-family: 'icons';
+  content: '\E861';
+  font-size: 20px;
+  text-align: center;
+}

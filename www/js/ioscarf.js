@@ -50,6 +50,11 @@ function deviceReady () {
     goToPage('configurationPage')
   });
 
+  var ht_refresh = new Hammer(document.getElementById('refreshDevices'));
+  ht_refresh.on('tap', function(ev_ref) {
+    setBleList();
+  });
+
   /*  Initialize the carousel here */
   var c = new Carousel('.carousel');
   c.init();
@@ -577,11 +582,11 @@ function addDeviceToList (device) {
 }
 
 function sendData(device) {
-  ble.connect(device.id, function(res){onConnect(res);}, onConnectFailure(device.id));
+  ble.connect(device.id, function(res){onConnect(res);}, function(err){onConnectFailure(err);});
 }
 
 function generateRandomData() {
-  var data = [];
+  var data = new Uint8Array(4);
   data[0]= "0x" + Math.floor(Math.random()*255).toString(16);
   data[1]= "0x" + Math.floor(Math.random()*255).toString(16);
   data[2]= "0x" + Math.floor(Math.random()*255).toString(16);
@@ -600,12 +605,12 @@ function generateRandomData() {
     function confirmWrite() {
       alert("successfully sent : " + message);
     }
-    function writeError() {
-      alert("Couldn't send Data");
+    function writeError(error) {
+      alert("Couldn't send Data " + error);
     }
 
-  function onConnectFailure(id) {
-    //alert("couldn't connect : " + id);
+  function onConnectFailure(reason) {
+    alert("couldn't connect : " + JSON.stringify(reason));
   }
 
  function getRandomFace() {
