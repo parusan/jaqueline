@@ -594,13 +594,37 @@ function generateRandomData() {
   return data;
 }
 
+  function getCharacteristic (response) {
+    var nbchar = response.characteristics.length;
+
+    if (nbchar > 0) {
+      if ($.inArray('Write', response.characteristics.properties)) {
+        var characteristic = {"id" : response.id,
+                              "characteristic_UUID" : response.characteristics[0].characteristic,
+                              "service_UUID": response.characteristics[0].service,
+                            }
+        return characteristic;
+      }
+    }
+    return false;
+  }
+
   function onConnect(res) {
-    alert(JSON.stringify(res));
-    var service_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
-    var charcteristic_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
+    var charact = getCharacteristic(res);
     message = generateRandomData();
-    alert(message);
-    ble.write(device.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
+
+    if (charact) {
+      alert('writing ' + message + ' to ' + JSON.stringify(charact));
+      ble.write(charact.id, charact.service_UUID, charact.characteristic_UUID, message.buffer, function(message){confirmWrite(message);}, function(error){writeError(error);});
+    }
+    else {
+      //TRYING DEFAULT
+      var service_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
+      var charcteristic_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
+      alert('Trying default write for ' + message);
+      ble.write(res.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
+    }
+
   }
     function confirmWrite() {
       alert("successfully sent : " + message);
