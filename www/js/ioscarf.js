@@ -24,7 +24,7 @@ function deviceReady () {
   /* Notifications list */
   /* ******* */
     initiateDB();
-    setBle();
+    setBleList();
 
   /* Buttons actions binding goes here */
   var hammertime = new Hammer(document.getElementById('leaveWt'));
@@ -64,15 +64,7 @@ function deviceReady () {
 /* Function called when the application is back from background */
 
 function onResume() {
-  if (!bleState) {
-    bleState = testBle();
-    if (bleState) {
-      getDevices();
-    }
-    else {
-      alert('oops, ble is switched off. Please switch on to proceed.')
-    }
-  }
+    setBleList();
 }
 
 /* ********************* */
@@ -478,7 +470,7 @@ function Carousel(selector) {
 /* ******** Bluetooth functions **** */
 /* ********************************* */
 
-function setBle() {
+function setBleList() {
   ble.isEnabled(
     function() {
         bleIsEnabled();
@@ -494,10 +486,17 @@ function bleIsEnabled() {
 }
 
 function bleIsDisabled() {
-  alert('oops, ble is switched off. Please switch on to proceed.')
+  if ( environment == 'mobile') {
+    alert('oops, ble is switched off. Please switch on to proceed.');
+  }
 }
 
 function getDevices() {
+  // Emptying the list of deices
+  availableDevices = [];
+  // Removing all elements from list
+  $('.device').remove();
+
 
   if (typeof ble !== 'undefined') {
       // the variable is defined
@@ -521,56 +520,92 @@ function getDevices() {
 }
 
 function onDiscoverDevice(device) {
-  var newDevice = {
-    '_id': device.id,
-    'deviceId': device.id,
-    'type': 'phoneCall',
-    'color': 'text',
-    'active': true
-  };
-  availableDevices.push('yo');
-  alert(device.id)
-  var deviceEntry = "<div class='device' id='Device"+device.id+"'>" +  JSON.stringify(device) + "</div>"
-  addDeviceToList(deviceEntry);
+  var devAlreadyThere = false;
+  for (i=0; i<availableDevices.length;i++) {
+    if (device.id == availableDevices[i].deviceId) {
+      devAlreadyThere = true;
+      i=availableDevices.length + 100;
+    }
+  }
+  if (devAlreadyThere == false) {
+
+    // IF the deice is not already in the list
+    // THen we add it
+    var newDevice = {
+      '_id': device.id,
+      'deviceId': device.id,
+      'type': 'phoneCall',
+      'color': 'text',
+      'active': true,
+      'full_desc' : JSON.stringify(device)
+    };
+    availableDevices.push(newDevice);
+    addDeviceToList(device);
+  }
+
 }
 
 function onFailure() {
 }
 
 
-function addDeviceToList (html) {
+function addDeviceToList (device) {
+  var desc = JSON.stringify(device);
+  var html = "<div class='device' id='device_"+device.id+"'> \
+  <div class='device_id'>" + device.id + "</div> \
+  <div class='device_name'>" +   (device.name ? device.name : "UNKNOWN DEVICE") + "</div> \
+  <div class='device_rssi'>" +   (device.rssi ? "Signal strength :" + device.rssi : "") + "</div> \
+  <div class='device_full'>" + desc + "</div> \
+    <div class='actionBar' id='deviceActionBar'> \
+        <div class='button pushButtonHexa' id='"+device.id+"_HEXA'>Push Data</div> \
+    </div> \
+  </div>"
   var $object = $(html).appendTo($('#devicesList'));
   console.log($object);
 
-  /* Here we assign the action to open full Page the notifications
-  //var notifObject = newNotif;
-  ht2 = propagating(new Hammer($object.get(0)));
-  ht2.on('tap', function(ev2) {
-      ev2.stopPropagation();
-    openFullPage($object);
-  });
-
-  /* Here we assign the actions to the buttons
-    var myId = id;
-    ht = propagating(new Hammer($object.children('.notifActions').children('.deleteButton').get(0)));
-    ht.domEvents=true; // enable dom events
-    ht.on('tap', function(ev) {
-      showActions($object, myId);
-      ev.stopPropagation();
+  /* Here we assign the actions to the buttons */
+    var myId = device.id;
+    ht_dev = propagating(new Hammer($object.children('#deviceActionBar').children('.pushButtonHexa').get(0)));
+    ht_dev.domEvents=true; // enable dom events
+    ht_dev.on('tap', function(ev_dev) {
+      sendData(device);
+      ev_dev.stopPropagation();
     });
 
-    /* Here we assign the actions to the close button
-      ht3 = propagating(new Hammer($object.children('.additionalActions').children('.closeButton').get(0)));
-      ht3.domEvents=true; // enable dom events
-      ht3.on('tap', function(ev3) {
-        closeFullPage($object);
-        ev3.stopPropagation();
-      });
-
-    setScene();
-    console.log('### Adding element Done ###');*/
+    console.log('### Adding device to DOM Done ###');
 
 }
+
+function sendData(device) {
+  ble.connect(device.id, onConnect(device), onConnectFailure(device.id));
+}
+
+function generateRandomData() {
+  var data = [];
+  data[0]= "0x" + Math.floor(Math.random()*255).toString(16);
+  data[1]= "0x" + Math.floor(Math.random()*255).toString(16);
+  data[2]= "0x" + Math.floor(Math.random()*255).toString(16);
+  data[3]= Math.floor(Math.random()*1000).toString();
+  return data;
+}
+
+  function onConnect(device) {
+    var service_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
+    var charcteristic_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
+    message = generateRandomData();
+    alert(message);
+    ble.writeWithoutResponse(device.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
+  }
+    function confirmWrite() {
+      alert("successfully sent : " + message);
+    }
+    function writeError() {
+      alert("Couldn't send Data");
+    }
+
+  function onConnectFailure(id) {
+    alert("couldn't connect to " + id);
+  }
 
  function getRandomFace() {
    var faces = [{
