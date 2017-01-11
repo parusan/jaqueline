@@ -2,10 +2,10 @@
 <widget id="com.phonegap.ioscarf" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>ioScarf</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        iot app connecting to a wearable via BLE.
     </description>
     <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+        PAL
     </author>
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
