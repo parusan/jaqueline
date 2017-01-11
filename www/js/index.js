@@ -42,6 +42,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onResume: function() {
         onResume();
+        
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
