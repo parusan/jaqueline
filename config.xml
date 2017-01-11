@@ -30,6 +30,7 @@
     <plugin name="cordova-plugin-statusbar" source="npm" spec="~2.1.2" />
     <plugin name="cordova-plugin-vibration" source="npm" spec="~2.1.0" />
 	<gap:plugin name="cordova-plugin-ble-central" source="npm" />
+	<preference name="phonegap-version" value="cli-6.1.0" />
     <plugin name="cordova-plugin-whitelist" source="npm"/>
     <platform name="android">
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
