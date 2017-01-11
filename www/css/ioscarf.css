@@ -664,7 +664,7 @@ width: 100%;
 float: left;
 }
 
-.pushButtonHexa {
+#deviceActionBar .button {
 margin: 10px;
 }
 

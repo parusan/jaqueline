@@ -563,6 +563,7 @@ function addDeviceToList (device) {
   <div class='device_full'>" + desc + "</div> \
     <div class='actionBar' id='deviceActionBar'> \
         <div class='button pushButtonHexa' id='"+device.id+"_HEXA'>Push Data</div> \
+        <div class='button pushButtonSimple' id='"+device.id+"_HEXA'>Simple Connect</div> \
     </div> \
   </div>"
   var $object = $(html).appendTo($('#devicesList'));
@@ -576,6 +577,12 @@ function addDeviceToList (device) {
       sendData(device);
       ev_dev.stopPropagation();
     });
+    ht_simple = propagating(new Hammer($object.children('#deviceActionBar').children('.pushButtonSimple').get(0)));
+    ht_simple.domEvents=true; // enable dom events
+    ht_simple.on('tap', function(ev_sim) {
+      simpleConnect(device);
+      ev_sim.stopPropagation();
+    });
 
     console.log('### Adding device to DOM Done ###');
 
@@ -584,6 +591,7 @@ function addDeviceToList (device) {
 function sendData(device) {
   ble.connect(device.id, function(res){onConnect(res);}, function(err){onConnectFailure(err);});
 }
+
 
 function generateRandomData() {
   var data = new Uint8Array(4);
@@ -635,6 +643,14 @@ function generateRandomData() {
 
   function onConnectFailure(reason) {
     alert("couldn't connect : " + JSON.stringify(reason));
+  }
+
+  function simpleConnect(device) {
+    ble.connect(device.id, function(res){onSimpleConnect(res);}, function(err){onConnectFailure(err);});
+  }
+
+  function onSimpleConnect(res) {
+      alert('connected to ' + res.id)
   }
 
  function getRandomFace() {
