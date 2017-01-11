@@ -4,7 +4,7 @@
     <description>
         iot app connecting to a wearable via BLE.
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
+    <author email="pierrealainlemoine@gmail.com">
         PAL
     </author>
     <content src="index.html" />
