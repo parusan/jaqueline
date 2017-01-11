@@ -577,7 +577,7 @@ function addDeviceToList (device) {
 }
 
 function sendData(device) {
-  ble.connect(device.id, onConnect(device), onConnectFailure(device.id));
+  ble.connect(device.id, function(res){onConnect(res);}, onConnectFailure(device.id));
 }
 
 function generateRandomData() {
@@ -589,12 +589,13 @@ function generateRandomData() {
   return data;
 }
 
-  function onConnect(device) {
+  function onConnect(res) {
+    alert(JSON.stringify(res));
     var service_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
     var charcteristic_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
     message = generateRandomData();
     alert(message);
-    ble.writeWithoutResponse(device.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
+    ble.write(device.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
   }
     function confirmWrite() {
       alert("successfully sent : " + message);
@@ -604,7 +605,7 @@ function generateRandomData() {
     }
 
   function onConnectFailure(id) {
-    alert("couldn't connect to " + id);
+    //alert("couldn't connect : " + id);
   }
 
  function getRandomFace() {
