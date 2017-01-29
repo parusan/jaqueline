@@ -26,6 +26,17 @@ function deviceReady () {
     initiateDB();
     setBleList();
 
+    /* Add here all the elements that should have a feedback for touch */
+    /* DO NOT USE HOVER OR ACTIVE STATES */
+    /* TODO: Remove hover and active event triggers on all elements */
+    var buttons = document.getElementsByClassName('button');
+    for (i=0; i<buttons.length; i++) {
+      var hammerTouch = new Hammer(buttons[i]);
+      hammerTouch.on('tap', function(evTouch) {
+      activateFeedback(evTouch.target);
+      });
+    }
+
   /* Buttons actions binding goes here */
   var hammertime = new Hammer(document.getElementById('leaveWt'));
   hammertime.on('tap', function(ev) {
@@ -64,6 +75,15 @@ function deviceReady () {
 
   });
 
+}
+
+/* Function for feedback on Touch */
+/* DO NOT USE HOVER OR ACTIVE STATES */
+
+function activateFeedback(javascriptObject) {
+  $(javascriptObject).removeClass('touched');
+  $(javascriptObject).addClass('touched');
+  setTimeout(function(){  $(javascriptObject).removeClass('touched');}, 400)
 }
 
 /* Function called when the application is back from background */
@@ -224,6 +244,7 @@ function addNotifToList (html, id, contactsArray) {
     ht = propagating(new Hammer($object.children('.notifActions').children('.deleteButton').get(0)));
     ht.domEvents=true; // enable dom events
     ht.on('tap', function(ev) {
+      activateFeedback(ev.target);
       showActions($object, myId);
       ev.stopPropagation();
     });
@@ -232,6 +253,7 @@ function addNotifToList (html, id, contactsArray) {
       ht3 = propagating(new Hammer($object.children('.additionalActions').children('.closeButton').get(0)));
       ht3.domEvents=true; // enable dom events
       ht3.on('tap', function(ev3) {
+        activateFeedback(ev3.target);
         closeFullPage($object);
         ev3.stopPropagation();
       });
@@ -311,7 +333,7 @@ function showActions(notifObject, myId) {
     <table> \
       <tr> \
         <td> \
-          <div class='areYouSureTitle'>Are you sure?</div> \
+          <div class='areYouSureTitle'>Do you want to delete this notification?</div> \
           <div class='button' id='deleteButton'>Yes, Delete please</div> \
           <div class='button cancelButton' id='closeDeleteConf'>Cancel</div> \
         </td> \
@@ -332,8 +354,9 @@ function showActions(notifObject, myId) {
   var htDelete = propagating(new Hammer(document.getElementById('deleteButton')));
   htDelete.domEvents=true; // enable dom events
   htDelete.on('tap', function(ev2) {
+    activateFeedback(ev2.target);
     deleteNotif(notifObject, myId);
-  $('#actionsLayer').remove();
+    $('#actionsLayer').remove();
     ev2.stopPropagation();
   });
 
@@ -564,6 +587,7 @@ function addDeviceToList (device) {
     <div class='actionBar' id='deviceActionBar'> \
         <div class='button pushButtonHexa' id='"+device.id+"_HEXA'>Push Data</div> \
         <div class='button pushButtonSimple' id='"+device.id+"_HEXA'>Simple Connect</div> \
+        <div class='button pushButtonDisc' id='"+device.id+"_DISC'>Disconnect</div> \
     </div> \
   </div>"
   var $object = $(html).appendTo($('#devicesList'));
@@ -574,14 +598,24 @@ function addDeviceToList (device) {
     ht_dev = propagating(new Hammer($object.children('#deviceActionBar').children('.pushButtonHexa').get(0)));
     ht_dev.domEvents=true; // enable dom events
     ht_dev.on('tap', function(ev_dev) {
+      activateFeedback(ev_dev.target);
       sendData(device);
       ev_dev.stopPropagation();
     });
     ht_simple = propagating(new Hammer($object.children('#deviceActionBar').children('.pushButtonSimple').get(0)));
     ht_simple.domEvents=true; // enable dom events
     ht_simple.on('tap', function(ev_sim) {
+      activateFeedback(ev_sim.target);
       simpleConnect(device);
       ev_sim.stopPropagation();
+    });
+
+    ht_disc = propagating(new Hammer($object.children('#deviceActionBar').children('.pushButtonDisc').get(0)));
+    ht_disc.domEvents=true; // enable dom events
+    ht_disc.on('tap', function(ev_disc) {
+      activateFeedback(ev_disc.target);
+      disconnect(device);
+      ev_disc.stopPropagation();
     });
 
     console.log('### Adding device to DOM Done ###');
@@ -592,26 +626,35 @@ function sendData(device) {
   ble.connect(device.id, function(res){onConnect(res);}, function(err){onConnectFailure(err);});
 }
 
+function disconnect(device) {
+  ble.disconnect(device.id);
+}
 
 function generateRandomData() {
-  var data = new Uint8Array(4);
-  data[0]= "0x" + Math.floor(Math.random()*255).toString(16);
-  data[1]= "0x" + Math.floor(Math.random()*255).toString(16);
-  data[2]= "0x" + Math.floor(Math.random()*255).toString(16);
-  data[3]= Math.floor(Math.random()*1000).toString();
-  return data;
+  var data = "";
+  data = data + "" + Math.floor(Math.random()*255).toString();
+  data = data + "," + Math.floor(Math.random()*255).toString();
+  data = data + "," + Math.floor(Math.random()*255).toString();
+  data = data + "," + Math.floor(Math.random()*1000).toString();
+  var data_buff = new Uint8Array(data.length);
+  for (var i = 0, l = data.length; i < l; i++) {
+    data_buff[i] = data.charCodeAt(i);
+  }
+  return data_buff;
 }
 
   function getCharacteristic (response) {
     var nbchar = response.characteristics.length;
 
     if (nbchar > 0) {
-      if ($.inArray('Write', response.characteristics.properties)) {
-        var characteristic = {"id" : response.id,
-                              "characteristic_UUID" : response.characteristics[0].characteristic,
-                              "service_UUID": response.characteristics[0].service,
-                            }
-        return characteristic;
+      for (j=0; j<nbchar; j++) {
+        if ($.inArray('Write', response.characteristics[j].properties)>=0) {
+          var characteristic = {"id" : response.id,
+                                "characteristic_UUID" : response.characteristics[j].characteristic,
+                                "service_UUID": response.characteristics[j].service,
+                              }
+          return characteristic;
+        }
       }
     }
     return false;
@@ -620,22 +663,21 @@ function generateRandomData() {
   function onConnect(res) {
     var charact = getCharacteristic(res);
     message = generateRandomData();
-
     if (charact) {
       alert('writing ' + message + ' to ' + JSON.stringify(charact));
-      ble.write(charact.id, charact.service_UUID, charact.characteristic_UUID, message.buffer, function(message){confirmWrite(message);}, function(error){writeError(error);});
+      ble.writeWithoutResponse(charact.id, charact.service_UUID, charact.characteristic_UUID, message.buffer, function(message){confirmWrite(message);}, function(error){writeError(error);});
     }
     else {
       //TRYING DEFAULT
-      var service_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
-      var charcteristic_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
-      alert('Trying default write for ' + message);
-      ble.write(res.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
+      var service_uuid = 'FFE0';
+      var characteristic_uuid = 'FFE1';
+      alert('Trying default write for ' + res.id + ' Service ' + service_uuid + ' Charc ' + characteristic_uuid + ' with message ' + message);
+      ble.writeWithoutResponse(res.id, service_uuid, characteristic_uuid, message.buffer, confirmWrite(message), writeError());
     }
 
   }
     function confirmWrite() {
-      alert("successfully sent : " + message);
+      //alert("successfully sent : " + message);
     }
     function writeError(error) {
       alert("Couldn't send Data " + error);

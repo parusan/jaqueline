@@ -253,8 +253,26 @@
 }
 
 .button:hover, .button:active {
+  /*animation: clicked 0.4s forwards ease-in-out;*/
+}
+
+.button.touched {
+  animation: touchFeedback 0.4s forwards ease-in-out;
+}
+
+@keyframes touchFeedback {
+0% {
+  color: #402B30;
+  background: #FFF;
+}
+10% {
   color: #FFF;
   background: #402B30;
+}
+100% {
+  color: #402B30;
+  background: #FFF;
+}
 }
 
 
