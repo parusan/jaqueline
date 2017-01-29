@@ -19,11 +19,11 @@ function deviceReady () {
 
 /* Test Notifications on Android */
 /* ANDROID ONLY */
-notificationListener.listen(function(n){
-  console.log("Received notification " + JSON.stringify(n) );
-}, function(e){
-  console.log("Notification Error " + e);
-});
+//notificationListener.listen(function(n){
+  //console.log("Received notification " + JSON.stringify(n) );
+//}, function(e){
+  //console.log("Notification Error " + e);
+//});
 
   /* Initialize application */
 
