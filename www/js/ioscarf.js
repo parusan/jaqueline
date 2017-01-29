@@ -17,6 +17,14 @@ function deviceReady () {
       console.log(environment);
   }
 
+/* Test Notifications on Android */
+/* ANDROID ONLY */
+notificationListener.listen(function(n){
+  console.log("Received notification " + JSON.stringify(n) );
+}, function(e){
+  console.log("Notification Error " + e);
+});
+
   /* Initialize application */
 
   /* Check if there are notifications, if yes, display the list of notifications once it's ok */
