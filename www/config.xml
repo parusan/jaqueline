@@ -28,8 +28,8 @@
     <plugin name="cordova-plugin-splashscreen" source="npm" spec="~3.2.1" />
     <plugin name="cordova-plugin-statusbar" source="npm" spec="~2.1.2" />
     <plugin name="cordova-plugin-vibration" source="npm" spec="~2.1.0" />
-    <plugin name="cordova-plugin-android-support-v4" source="npm" />
-	<plugin spec="https://github.com/coconauts/NotificationListener-cordova.git" />
+<!--    <plugin name="cordova-plugin-android-support-v4" source="npm" />
+	<plugin spec="https://github.com/coconauts/NotificationListener-cordova.git" /> -->
 	<gap:plugin name="cordova-plugin-ble-central" source="npm" />
    <platform name="android">
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
