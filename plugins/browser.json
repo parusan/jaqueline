@@ -10,10 +10,10 @@
         "cordova-plugin-battery-status": {
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         },
-        "cordova-plugin-camera": {
+        "cordova-plugin-ble-central": {
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         },
-        "cordova-plugin-media-capture": {
+        "cordova-plugin-camera": {
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         },
         "cordova-plugin-console": {
@@ -49,6 +49,9 @@
         "cordova-plugin-media": {
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         },
+        "cordova-plugin-media-capture": {
+            "PACKAGE_NAME": "com.phonegap.ioscarf"
+        },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         },
@@ -62,9 +65,6 @@
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.phonegap.ioscarf"
-        },
-        "cordova-plugin-ble-central": {
             "PACKAGE_NAME": "com.phonegap.ioscarf"
         }
     },
